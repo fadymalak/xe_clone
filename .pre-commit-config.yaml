@@ -32,6 +32,7 @@ repos:
       - id: flake8
         exclude: (migrations|mpts|locustfiles)/.*|.*/__init__.py
         additional_dependencies: [flake8-bugbear]
+        args: ["--max-line-length=120"]
 
   - repo: https://github.com/myint/docformatter
     rev: v1.4
