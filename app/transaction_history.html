@@ -1,0 +1,23 @@
+<!-- templates/transaction_history.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Transaction History</title>
+</head>
+<body>
+    <h2>Transaction History</h2>
+    <ul>
+        {% for transaction in transactions %}
+            <li>
+                Date: {{ transaction.created_at|date:"Y-m-d H:i" }} - 
+                Type: {{ transaction.type }} - 
+                Amount: ${{ transaction.amount }} - 
+                Status: {{ transaction.success|yesno:"Success,Failed" }}
+            </li>
+        {% empty %}
+            <li>No transactions found.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
