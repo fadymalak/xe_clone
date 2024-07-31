@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Currency Converter</title>
+  </head>
+  <body>
+    <h1>Currency Converter</h1>
+    <form method="post">
+      {% csrf_token %} {{ form.as_p }}
+      <button type="submit">Convert</button>
+    </form>
+    {% if context %}
+    <h2>Conversion Result</h2>
+    <p>{{ context.res }}</p>
+    {% endif %}
+  </body>
+</html>
