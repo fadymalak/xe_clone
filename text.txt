@@ -1,0 +1,9 @@
+// create isolated env
+python -m venv venv
+
+// install dependancies
+python install -r requirements.txt
+
+// install pre commit
+
+pre-commit install
