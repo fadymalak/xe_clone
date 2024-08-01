@@ -1,14 +1,14 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
 
 
-class User(AbstractUser):
+class user(models.Model):
     """Custom user model that inherits from AbstractUser and includes
     additional fields."""
-
-    preferred_currency = models.CharField(max_length=3, default="")
-    iban = models.CharField()
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    preferred_currency = models.CharField(max_length=3)
+    iban = models.CharField(max_length=30)
     is_deleted = models.BooleanField(default=False)
     updated_at = models.DateTimeField(auto_now=True)
     password_updated_at = models.DateTimeField(timezone.now)
