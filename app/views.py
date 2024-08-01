@@ -12,19 +12,18 @@ from .forms import CurrencyConverterForm
 class ConverterView(View):
     def get(self, request, *args, **kwargs):
         form = CurrencyConverterForm()
-        return render(request, "converter.html", {"form": form})
+        return render(request, "app/converter.html", {"form": form})
 
     def post(self, request, *args, **kwargs):
         form = CurrencyConverterForm(request.POST)
         context = {}
-
         if form.is_valid():
             from_currency = form.cleaned_data["from_currency"].upper()
             to_currency = form.cleaned_data["to_currency"].upper()
             amount = int(form.cleaned_data["amount"])
             key = f"{from_currency} to {to_currency}"
-
-            if cache.get(key):
+            print(os.environ.get("REDIS_ACTIVE"))
+            if os.environ.get("REDIS_ACTIVE") == "True" and cache.get(key):
                 response = cache.get(key)
 
             else:
@@ -32,7 +31,8 @@ class ConverterView(View):
                 API_KEY = os.environ.get("XE_API_KEY")
                 xecd = XecdClient(ACCOUNT_ID, API_KEY)
                 response = xecd.convert_from(from_currency, to_currency, 1)
-                cache.set(key, response, 3600)
+                if os.environ.get("REDIS_ACTIVE") == "True":
+                    cache.set(key, response, 3600)
 
             if response.get("code") == 7 or len(response.get("to")) == 0:
                 context = {
@@ -43,7 +43,7 @@ class ConverterView(View):
                     "res": response.get("to")[0]["mid"] * amount,
                 }
 
-        return render(request, "converter.html", {"form": form, "context": context})
+        return render(request, "app/converter.html", {"form": form, "context": context})
 
 
 class DisplayUsernameView(LoginRequiredMixin, View):

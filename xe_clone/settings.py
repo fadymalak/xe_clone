@@ -84,6 +84,17 @@ DATABASES = {
     }
 }
 
+if os.getenv("MYSQL_ACTIVE") == "True":
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": os.getenv("MYSQL_DATABASE"),
+            "USER": os.getenv("MYSQL_USER"),
+            "PASSWORD": os.getenv("MYSQL_PASSWORD"),
+            "HOST": os.getenv("MYSQL_HOST"),
+        }
+    }
+
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
