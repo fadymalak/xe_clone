@@ -8,7 +8,7 @@ from app.models import Currency, CurrencyPrice
 
 
 class Command(BaseCommand):
-    help = "Fetch and seed the latest currency prices from Currency Freaks API"
+    help = "Fetch and seed the currency prices from Currency Freaks API"
 
     def handle(self, *args, **kwargs):
         load_dotenv()
@@ -22,7 +22,6 @@ class Command(BaseCommand):
         data = response.json()
         rates = data["rates"]
         date = data["date"].split(" ")[0]
-        print(date)
 
         currency_prices = []
         for symbol, price in rates.items():
@@ -39,4 +38,4 @@ class Command(BaseCommand):
                 pass
 
         CurrencyPrice.objects.bulk_create(currency_prices)
-        self.stdout.write(self.style.SUCCESS("Successfully seeded latest currency prices"))
+        self.stdout.write(self.style.SUCCESS("Successfully seeded currency prices"))

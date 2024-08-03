@@ -30,7 +30,6 @@ class Command(BaseCommand):
                 }
             )
 
-        # Create Currency objects
         currencies = []
         for currency_data in currency_list:
             try:

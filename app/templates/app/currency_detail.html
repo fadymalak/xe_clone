@@ -1,0 +1,17 @@
+<!-- This is a starter template I will try to style it -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ currency.name }} Details</title>
+  </head>
+  <body>
+    <h1>{{ currency.name }} ({{ currency.symbol }})</h1>
+    <p><strong>Name:</strong> {{ currency.name }}</p>
+    <p><strong>Symbol:</strong> {{ currency.symbol }}</p>
+    <p><strong>Exchange Rate:</strong> {{ current_price.current_price }}</p>
+
+    <a href="{% url 'currency-list' %}">Back to Currency List</a>
+    <a href="{% url 'convert' %}">Convert Currency</a>
+  </body>
+</html>
