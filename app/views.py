@@ -12,6 +12,14 @@ from .models import Currency, CurrencyPrice
 
 
 class ConverterView(View):
+    """
+    A view class for currency conversion.
+    Methods:
+    - get: Handles GET requests and renders the currency converter form.
+    - post: Handles POST requests and performs the currency conversion.
+    - get_conversion_rate: It's a helper function retrieves the conversion rate API or from redis.
+    """
+
     def get(self, request, *args, **kwargs):
         form = CurrencyConverterForm()
         return render(request, "app/converter.html", {"form": form})
@@ -53,6 +61,12 @@ class ConverterView(View):
 
 
 class DisplayUsernameView(LoginRequiredMixin, View):
+    """
+    View class that displays the username of the current user that enables him receive money.
+    Methods:
+    - get: Handles GET requests and renders the username template.
+    """
+
     # TODO Finish login view and template
     def get(self, request, *args, **kwargs):
         username = request.user.username
@@ -60,12 +74,16 @@ class DisplayUsernameView(LoginRequiredMixin, View):
 
 
 class CurrencyListView(ListView):
+    """A view that displays a list of currencies."""
+
     model = Currency
     template_name = "app/currency_list.html"
     context_object_name = "currencies"
 
 
 class CurrencyDetailView(DetailView):
+    """A view for displaying detailed information about a currency."""
+
     model = Currency
     template_name = "app/currency_detail.html"
     context_object_name = "currency"
