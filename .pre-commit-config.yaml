@@ -1,6 +1,6 @@
 default_stages: [commit]
 default_language_version:
-  python: python3.10
+  python: python3.12
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -24,7 +24,6 @@ repos:
     rev: v1.4
     hooks:
       - id: autoflake
-
 
   - repo: https://github.com/pycqa/flake8
     rev: 6.0.0
