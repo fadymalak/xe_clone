@@ -30,7 +30,7 @@ class Command(BaseCommand):
                     currency = Currency.objects.get(symbol=symbol)
                     currency_price = CurrencyPrice(
                         currency=currency,
-                        current_price=float(price),
+                        price=float(price),
                         created_at=date,
                     )
                     currency_prices.append(currency_price)

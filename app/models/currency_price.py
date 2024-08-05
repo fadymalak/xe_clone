@@ -6,16 +6,17 @@ class CurrencyPrice(models.Model):
 
     Fields:
         currency (ForeignKey): The currency associated with the price.
-        current_price (DecimalField): The current price of the currency.
+        price (DecimalField): The current price of the currency.
         created_at (DateTimeField): The date when the price was created.
         updated_at (DateTimeField): The date when the price was last updated.
     """
 
     currency = models.ForeignKey("Currency", on_delete=models.CASCADE)
     # TODO: Change to DecimalField or IntegerField
-    current_price = models.FloatField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    price = models.FloatField()
+    created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
+        """Return the currency representation."""
         return f"{self.currency}"

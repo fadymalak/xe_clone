@@ -32,11 +32,30 @@ class ConverterView(View):
             from_currency = form.cleaned_data["from_currency"].upper()
             to_currency = form.cleaned_data["to_currency"].upper()
             amount = int(form.cleaned_data["amount"])
+            from_currency = CurrencyPrice.objects.filter(currency__symbol=from_currency).order_by("-created_at").first()
+            to_currency = CurrencyPrice.objects.filter(currency__symbol=to_currency).order_by("-created_at").first()
+            if from_currency is None or to_currency is None:
+                context["error"] = "Unknown currency symbol"
+            else:
+                context["res"] = from_currency.price / to_currency.price * amount
+        return render(request, "app/converter.html", {"form": form, "context": context})
+
+    # Deprecated
+    def post_old(self, request, *args, **kwargs):
+        """This post method is not used because it uses the free XE API which
+        is returning dummy data."""
+        form = CurrencyConverterForm(request.POST)
+        context = {}
+
+        if form.is_valid():
+            from_currency = form.cleaned_data["from_currency"].upper()
+            to_currency = form.cleaned_data["to_currency"].upper()
+            amount = int(form.cleaned_data["amount"])
             key = f"{from_currency} to {to_currency}"
             response = self.get_conversion_rate(from_currency, to_currency, key)
 
             if response is None or not response.get("to"):
-                context["res"] = "Invalid currency code"
+                context["res"] = "Unknown currency symbol"
             else:
                 context["res"] = response.get("to")[0]["mid"] * amount
 
@@ -91,6 +110,6 @@ class CurrencyDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         currency = self.object
-        current_price = CurrencyPrice.objects.filter(currency=currency).order_by("-created_at").first()
-        context["current_price"] = current_price
+        all_prices = CurrencyPrice.objects.filter(currency=currency).order_by("-created_at")
+        context["all_prices"] = all_prices
         return context

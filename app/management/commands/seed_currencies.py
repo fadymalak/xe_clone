@@ -27,6 +27,7 @@ class Command(BaseCommand):
                     "name": value["currencyName"],
                     "symbol": value["currencyCode"],
                     "country": value["countryName"],
+                    "image_url": value["icon"],
                 }
             )
 

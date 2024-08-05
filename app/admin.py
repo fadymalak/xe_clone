@@ -12,6 +12,6 @@ class CurrencyAdmin(admin.ModelAdmin):
 
 @admin.register(CurrencyPrice)
 class CurrencyPriceAdmin(admin.ModelAdmin):
-    list_display = ("currency", "current_price", "created_at")
+    list_display = ("currency", "price", "created_at")
     list_select_related = ("currency",)
     search_fields = ("currency__name",)

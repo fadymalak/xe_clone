@@ -11,9 +11,12 @@
       {% csrf_token %} {{ form.as_p }}
       <button type="submit">Convert</button>
     </form>
-    {% if context %}
+    {% if context.res %}
     <h2>Conversion Result</h2>
-    <p>{{ context.res }}</p>
+    <p>{{ context.res|floatformat:2 }}</p>
+    {% endif %} {% if context.error %}
+    <h2>Error</h2>
+    <p>{{ context.error }}</p>
     {% endif %}
   </body>
 </html>

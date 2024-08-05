@@ -1,47 +1,29 @@
-from unittest.mock import Mock, patch
-
+import pytest
 from django.urls import reverse
 
 
-@patch("app.views.requests.get")
-def test_converter_view_success(mock_requests_get, client):
-    mock_response = Mock()
-    mock_response.json.return_value = {"to": [{"mid": 48.5}]}
-    mock_response.status_code = 200
-    mock_requests_get.return_value = mock_response
-    data = {"from_currency": "USD", "to_currency": "EGP", "amount": 100}
+@pytest.mark.django_db
+def test_converter_view_valid_currency(client, currency_prices):
+    currency_eg, currency_us, _ = currency_prices
     url = reverse("convert")
+    data = {
+        "from_currency": currency_eg.symbol,
+        "to_currency": currency_us.symbol,
+        "amount": 10,
+    }
+    response = client.post(url, data)
+    assert response.status_code == 200
+    assert "context" in response.context
+    assert "res" in response.context["context"]
+    assert response.context["context"]["res"] == 485.0
+
+
+@pytest.mark.django_db
+def test_converter_view_post_invalid_currency(client):
+    url = reverse("convert")
+    data = {"from_currency": "uty", "to_currency": "EGP", "amount": 100}
     response = client.post(url, data)
 
     assert "context" in response.context
-    assert response.context["context"]["res"] == 4850
-
-
-@patch("app.views.requests.get")
-def test_converter_view_fail_1(mock_requests_get, client):
-    mock_response = Mock()
-    mock_response.json.return_value = {"to": []}
-    mock_response.status_code = 200
-    mock_requests_get.return_value = mock_response
-
-    data = {"from_currency": "USD", "to_currency": "EEE", "amount": 1}
-
-    url = reverse("convert")
-    response = client.post(url, data)
-
-    assert "context" in response.context
-    assert response.context["context"]["res"] == "Invalid currency code"
-
-
-@patch("app.views.requests.get")
-def test_converter_view_fail_2(mock_requests_get, client):
-    mock_response = Mock()
-    mock_response.status_code = 400
-    mock_requests_get.return_value = mock_response
-    data = {"from_currency": "UUU", "to_currency": "EEE", "amount": 1}
-
-    url = reverse("convert")
-    response = client.post(url, data)
-
-    assert "context" in response.context
-    assert response.context["context"]["res"] == "Invalid currency code"
+    assert "error" in response.context["context"]
+    assert response.context["context"]["error"] == "Unknown currency symbol"
