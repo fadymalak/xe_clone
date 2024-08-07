@@ -1,6 +1,12 @@
-from django.urls import path
+from django.urls import include, path
+from rest_framework.routers import DefaultRouter
 
 from . import views
+from .api_views import CurrencyConverterView, CurrencyViewSet, UsernameView
+
+router = DefaultRouter()
+# made it currencies to avoid conflict with the existing currency view
+router.register(r"currencies", CurrencyViewSet, basename="currencies")
 
 urlpatterns = [
     path("convert/", views.ConverterView.as_view(), name="convert"),
@@ -15,4 +21,10 @@ urlpatterns = [
         views.CurrencyDetailView.as_view(),
         name="currency-detail",
     ),
+]
+
+urlpatterns += [
+    path("api/", include(router.urls)),
+    path("api/username/", UsernameView.as_view(), name="username"),
+    path("api/convert/", CurrencyConverterView.as_view(), name="converter"),
 ]
