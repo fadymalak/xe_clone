@@ -25,7 +25,6 @@ repos:
     hooks:
       - id: autoflake
 
-
   - repo: https://github.com/pycqa/flake8
     rev: 6.0.0
     hooks:
