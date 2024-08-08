@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model() #dynamically retrieve the user 
 
-class Transaction(models.Model):
+class transaction(models.Model):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     amount = models.FloatField()
     type = models.CharField(

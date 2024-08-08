@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class Converter(models.Model):
+class converter(models.Model):
     """Model of currency converter.
 
     Fields:
