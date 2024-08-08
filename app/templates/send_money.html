@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Money</title>
+</head>
+<body>
+    <h2>Send Money</h2>
+    <form method="post" action="{% url 'send-money' %}">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {{ form.as_p }}
+        <button type="submit">Send Money</button>
+    </form>
+</body>
+</html>
