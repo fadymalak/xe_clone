@@ -1,44 +1,63 @@
-# Create your views here.
-from django.shortcuts import render, redirect
-from django.contrib.auth import login
-from django.views import View
-from .forms import CustomUserCreationForm, CustomPasswordResetForm, TransferForm
 
-class SignUpView(View):
-    def get(self, request):
-        form = CustomUserCreationForm()
-        return render(request, 'signup.html', {'form': form})
+from rest_framework import generics, status
+from django.contrib.auth import get_user_model
+from .serializers import SignupSerializer, OTPRequestSerializer, SendMoneySerializer
+from django.shortcuts import redirect
+from rest_framework.response import Response
+import random
+from .models.transaction import transaction
+from .models.transfer import transfer
+from .models.user import user
 
-    def post(self, request):
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('to login page')
-        return render(request, 'signup.html', {'form': form})
+User = get_user_model()
 
-class ForgetPasswordView(View):
-    def get(self, request):
-        form = CustomPasswordResetForm()
-        return render(request, 'forget_password.html', {'form': form})
+class SignupView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = SignupSerializer
 
-    def post(self, request):
-        form = CustomPasswordResetForm(request.POST)
-        if form.is_valid():
-            form.save(request=request)
-            return redirect('password_reset_done')
-        return render(request, 'forget_password.html', {'form': form})
+    def perform_create(self, serializer):
+        user = serializer.save()
 
-class SendMoneyView(View):
-    def get(self, request):
-        form = TransferForm()
-        return render(request, 'send_money.html', {'form': form})
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        if response.status_code == status.HTTP_201_CREATED:
+            return redirect('/login/')
+        return response
+
+class OTPRequestView(generics.GenericAPIView):
+    serializer_class = OTPRequestSerializer
 
     def post(self, request):
-        form = TransferForm(request.POST)
-        if form.is_valid():
-            transfer = form.save()
-            transfer.from_user.add_balance(-transfer.amount)
-            transfer.to_user.add_balance(transfer.amount)
-            return redirect('home')
-        return render(request, 'send_money.html', {'form': form})
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        email = serializer.validated_data['email']
+        user = User.objects.filter(email=email).first()
+
+        if user:
+            otp = str(random.randint(100000, 999999))
+            user.otp = otp
+            user.save()
+
+        return Response({'message': 'If an account with that email exists, an OTP has been generated and saved.'}, status=status.HTTP_200_OK)
+
+class SendMoneyView(generics.GenericAPIView):
+    serializer_class = SendMoneySerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        from_user_profile = user.objects.get(user=request.user)
+        to_user_profile = serializer.validated_data['to_user']
+        amount = serializer.validated_data['amount']
+
+        if from_user_profile.balance < amount:
+            return Response({'error': 'Insufficient balance'}, status=status.HTTP_400_BAD_REQUEST)
+
+        from_user_profile.subtract_balance(amount)
+        to_user_profile.add_balance(amount)
+
+        transfer.objects.create(from_user=from_user_profile, to_user=to_user_profile, amount=amount)
+        transaction.objects.create(user=from_user_profile.user, amount=amount)
+        transaction.objects.create(user=to_user_profile.user, amount=amount)
+
+        return Response({'message': 'Money sent successfully'}, status=status.HTTP_200_OK)

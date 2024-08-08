@@ -1,12 +1,9 @@
 from django.db import models
-from django.utils import timezone
-from django.contrib.auth import get_user_model
-
-User = get_user_model() #dynamically retrieve the user 
+from app.models.user import user
 
 class transfer(models.Model):
-    from_user = models.ForeignKey(User, related_name='transfers_from', on_delete=models.DO_NOTHING)
-    to_user = models.ForeignKey(User, related_name='transfers_to', on_delete=models.DO_NOTHING)
+    from_user = models.ForeignKey(user, related_name='transfers_made', on_delete=models.CASCADE)
+    to_user = models.ForeignKey(user, related_name='transfers_received', on_delete=models.CASCADE)
     amount = models.FloatField()
     created_at = models.DateTimeField(auto_now_add=True)
     is_deleted = models.BooleanField(default=False)
