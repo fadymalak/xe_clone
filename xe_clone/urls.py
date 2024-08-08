@@ -16,7 +16,14 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
-
+from app.views import SignUpView, LoginView, TransactionHistoryView
 urlpatterns = [
+<<<<<<< HEAD
+    path('admin/', admin.site.urls),
+    path('signup/', SignUpView.as_view(), name='signup'),
+    path('login/', LoginView.as_view(), name='login'),
+    path('history/', TransactionHistoryView.as_view(), name='history'),
+=======
     path("admin/", admin.site.urls),
+>>>>>>> main
 ]
