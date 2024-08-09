@@ -9,6 +9,7 @@ router = DefaultRouter()
 router.register(r"currencies", CurrencyViewSet, basename="currencies")
 
 urlpatterns = [
+    path("", views.HomeView.as_view(), name="home"),
     path("convert/", views.ConverterView.as_view(), name="convert"),
     path(
         "display-username/",

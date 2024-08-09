@@ -14,7 +14,7 @@ class CurrencyPrice(models.Model):
     currency = models.ForeignKey("Currency", on_delete=models.CASCADE)
     # TODO: Change to DecimalField or IntegerField
     price = models.FloatField()
-    created_at = models.DateField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):

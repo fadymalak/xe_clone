@@ -11,6 +11,17 @@ from .forms import CurrencyConverterForm
 from .models import Currency, CurrencyPrice
 
 
+class HomeView(View):
+    """
+    A view class for the home page.
+    Methods:
+    - get: Handles GET requests and renders the home page template.
+    """
+
+    def get(self, request, *args, **kwargs):
+        return render(request, "app/home.html")
+
+
 class ConverterView(View):
     """
     A view class for currency conversion.
@@ -32,12 +43,15 @@ class ConverterView(View):
             from_currency = form.cleaned_data["from_currency"].upper()
             to_currency = form.cleaned_data["to_currency"].upper()
             amount = int(form.cleaned_data["amount"])
+
             from_currency = CurrencyPrice.objects.filter(currency__symbol=from_currency).order_by("-created_at").first()
             to_currency = CurrencyPrice.objects.filter(currency__symbol=to_currency).order_by("-created_at").first()
             if from_currency is None or to_currency is None:
                 context["error"] = "Unknown currency symbol"
             else:
                 context["res"] = from_currency.price / to_currency.price * amount
+        else:
+            context["error"] = form.errors
         return render(request, "app/converter.html", {"form": form, "context": context})
 
     # Deprecated
@@ -98,6 +112,13 @@ class CurrencyListView(ListView):
     model = Currency
     template_name = "app/currency_list.html"
     context_object_name = "currencies"
+    paginate_by = 30
+
+    def get_queryset(self):
+        search_query = self.request.GET.get("search")
+        if search_query:
+            return Currency.objects.filter(name__icontains=search_query)
+        return Currency.objects.all()
 
 
 class CurrencyDetailView(DetailView):

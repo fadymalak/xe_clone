@@ -1,22 +1,33 @@
-<!-- This is a starter template I will try to style it -->
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Currency Converter</title>
-  </head>
-  <body>
-    <h1>Currency Converter</h1>
-    <form method="post">
-      {% csrf_token %} {{ form.as_p }}
-      <button type="submit">Convert</button>
-    </form>
-    {% if context.res %}
-    <h2>Conversion Result</h2>
-    <p>{{ context.res|floatformat:2 }}</p>
-    {% endif %} {% if context.error %}
-    <h2>Error</h2>
-    <p>{{ context.error }}</p>
-    {% endif %}
-  </body>
-</html>
+{% extends "app/base_template.html" %} {% block content %}
+<div class="container">
+  <h2 class="convert-header">Currency Converter</h2>
+  <form method="post" class="form">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="{{ form.from_currency.id_for_label }}"
+        >{{ form.from_currency.label }}</label
+      >
+      {{ form.from_currency }}
+    </div>
+    <div class="form-group">
+      <label for="{{ form.to_currency.id_for_label }}"
+        >{{ form.to_currency.label }}</label
+      >
+      {{ form.to_currency }}
+    </div>
+    <div class="form-group">
+      <label for="{{ form.amount.id_for_label }}"
+        >{{ form.amount.label }}</label
+      >
+      {{ form.amount }}
+    </div>
+    <button type="submit" class="form-submit">Convert</button>
+  </form>
+  {% if context.res %}
+  <h2 class="from-result-header">Conversion Result</h2>
+  <p class="from-result">{{ context.res|floatformat:2 }}</p>
+  {% endif %} {% if context.error %}
+  <h2 class="from-result-header">Error</h2>
+  <p class="from-result">{{ context.error }}</p>
+  {% endif %} {% endblock %}
+</div>

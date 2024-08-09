@@ -46,3 +46,27 @@ def test_currency_converter_missing_field(api_client):
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert "to_currency" in response.data
     assert response.data["to_currency"][0] == "This field is required."
+
+
+@pytest.mark.django_db
+def test_currency_converter_validation_error1(api_client):
+    url = reverse("converter")
+    data = {
+        "from_currency": "<h1>",
+        "amount": 100,
+    }
+    response = api_client.post(url, data, format="json")
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+
+@pytest.mark.django_db
+def test_currency_converter_validation_error2(api_client):
+    url = reverse("converter")
+    data = {
+        "from_currency": "!!!",
+        "amount": 100,
+    }
+    response = api_client.post(url, data, format="json")
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST

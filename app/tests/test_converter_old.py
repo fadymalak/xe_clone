@@ -33,7 +33,7 @@ def test_converter_view_fail_1(mock_requests_get, client):
     response = client.post(url, data)
 
     assert "context" in response.context
-    assert response.context["context"]["res"] == "Invalid currency code"
+    assert response.context["context"]["res"] == "Unknown currency symbol"
 
 
 @pytest.mark.skip
@@ -48,4 +48,4 @@ def test_converter_view_fail_2(mock_requests_get, client):
     response = client.post(url, data)
 
     assert "context" in response.context
-    assert response.context["context"]["res"] == "Invalid currency code"
+    assert response.context["context"]["res"] == "Unknown currency symbol"
