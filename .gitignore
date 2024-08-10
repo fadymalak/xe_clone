@@ -1,2 +1,10 @@
-venv
-venv/*
+<<<<<<< HEAD
+mynv
+=======
+myenv/
+>>>>>>> 4c6a3a7 (updated gitignore)
+mynv/*
+__pycache__
+db.sqlite3
+
+ 
