@@ -38,7 +38,7 @@ class CurrencyConverterView(APIView):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-            converted_amount = from_currency.price / to_currency.price * amount
+            converted_amount = to_currency.price / from_currency.price * amount
             return Response({"converted_amount": converted_amount}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -7,8 +7,8 @@ def test_converter_view_valid_currency(client, currency_prices):
     currency_eg, currency_us, _ = currency_prices
     url = reverse("convert")
     data = {
-        "from_currency": currency_eg.symbol,
-        "to_currency": currency_us.symbol,
+        "from_currency": currency_us.symbol,
+        "to_currency": currency_eg.symbol,
         "amount": 10,
     }
     response = client.post(url, data)

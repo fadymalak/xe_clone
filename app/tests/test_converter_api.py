@@ -8,8 +8,8 @@ def test_currency_converter_valid(api_client, currency_prices):
     currency_eg, currency_us, _ = currency_prices
     url = reverse("converter")
     data = {
-        "from_currency": currency_eg.symbol,
-        "to_currency": currency_us.symbol,
+        "from_currency": currency_us.symbol,
+        "to_currency": currency_eg.symbol,
         "amount": 10,
     }
     response = api_client.post(url, data, format="json")

@@ -49,7 +49,7 @@ class ConverterView(View):
             if from_currency is None or to_currency is None:
                 context["error"] = "Unknown currency symbol"
             else:
-                context["res"] = from_currency.price / to_currency.price * amount
+                context["res"] = to_currency.price / from_currency.price * amount
         else:
             context["error"] = form.errors
         return render(request, "app/converter.html", {"form": form, "context": context})

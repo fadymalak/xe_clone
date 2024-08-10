@@ -17,7 +17,7 @@ This project is a clone of the XE currency converter, allowing users to retrieve
    ```bash
    python -m venv venv
 
-   venv\Scripts\activate
+   source venv\Scripts\activate
    ```
 
 3. **Install Dependencies:**
