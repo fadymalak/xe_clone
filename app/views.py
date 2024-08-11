@@ -288,22 +288,24 @@ class TransactionHistoryView(TemplateView):
 class ResetPasswordAPI(APIView):
     permission_classes = [permissions.AllowAny]  
     authentication_classes = [JWTAuthentication]
+    serializer_class = ResetPasswordSerializer
 
     def post(self, request, *args, **kwargs):
         token = request.data.get('token')
         uid = request.user.id
         new_password = request.data.get('new_password')
-        
-        valid_data = TokenVerifyView.as_view()(request._request).data
+        serailizer = ResetPasswordSerializer(data=request.data)
+        # import pdb;pdb.set_trace()
+        if serailizer.is_valid(raise_exception=True):
 
-        try:
-            user = User.objects.get(pk=uid)
-        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
-            return Response({'error': 'Invalid user'}, status=status.HTTP_400_BAD_REQUEST)
-        user.set_password(new_password)
-        user.user_info.otp = None
-        user.save()
-        return Response({'success': 'Password has been reset successfully'})
+            try:
+                user = User.objects.get(pk=uid)
+            except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+                return Response({'error': 'Invalid user'}, status=status.HTTP_400_BAD_REQUEST)
+            user.set_password(new_password)
+            user.user_info.otp = None
+            user.save()
+            return Response({'success': 'Password has been reset successfully'})
 
 class TransactionHistoryViewAPI(generics.ListAPIView):
     serializer_class = TransactionSerializer

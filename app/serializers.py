@@ -78,7 +78,9 @@ class ResetPasswordSerializer(serializers.Serializer):
 
     def validate_otp(self, value):
         user = User.objects.get(email=self.initial_data['email'])
-        if not user.profile.otp == value:
+        user_info = user.user_info
+
+        if not user_info.otp == value:
             raise serializers.ValidationError("OTP is incorrect or has expired.")
         return value
 
@@ -210,8 +212,8 @@ class SendMoneySerializer(serializers.ModelSerializer):
         to_user = User.objects.filter(username=validated_data['to_user_username']).first()
         to_user_info = user.objects.filter(user=to_user)
         amount = validated_data['amount']
-        import pdb
-        pdb.set_trace()
+        # import pdb
+        # pdb.set_trace()
         from_user_info.subtract_balance(amount)
 
         to_user_info.add_balance(amount)
