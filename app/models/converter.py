@@ -3,7 +3,7 @@ from django.db import models
 from .currency import Currency
 
 
-class converter(models.Model):
+class Converter(models.Model):
     """Model of currency converter.
 
     Fields:

@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class currency(models.Model):
+class Currency(models.Model):
     """A model containing a currency with name and symbol."""
 
     name = models.CharField(max_length=100)
