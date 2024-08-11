@@ -175,7 +175,7 @@ class SignupSerializer(serializers.ModelSerializer):
         )
         user_default.set_password(validated_data['password'])
         user_default.save()
-        user_custom = user(user=user_default, preferred_currency=validated_data["preferred_currency"], iban=validated_data["iban"])
+        user_custom = user.objects.create(user=user_default, preferred_currency=validated_data["preferred_currency"], iban=validated_data["iban"])
         return user_default
     
 
@@ -188,31 +188,37 @@ class SendMoneySerializer(serializers.ModelSerializer):
         fields = ['to_user_username', 'amount']
 
     def validate(self, data):
-        from_user = user.objects.get(user=self.context['request'].user)
-        to_user = user.objects.filter(user__username=data['to_user_username']).first()
+        from_user = self.context['request'].user
+        to_user = User.objects.filter(username=data['to_user_username']).first()
 
-        if not to_user:
+        from_user_info = user.objects.filter(user=from_user).first()
+        to_user_info = user.objects.filter(user=to_user).first()
+
+        if not to_user_info:
             raise serializers.ValidationError("Receiver not found")
-        if from_user == to_user:
+        if from_user_info == to_user_info:
             raise serializers.ValidationError("You cannot send money to yourself")
-        if from_user.balance < data['amount']:
+        if from_user_info.balance < data['amount']:
             raise serializers.ValidationError("Insufficient balance")
 
         data['to_user'] = to_user
         return data
 
     def create(self, validated_data):
-        from_user = user.objects.get(user=self.context['request'].user)
-        to_user = validated_data['to_user']
+        from_user = self.context['request'].user
+        from_user_info = user.objects.filter(user=from_user)
+        to_user = User.objects.filter(username=validated_data['to_user_username']).first()
+        to_user_info = user.objects.filter(user=to_user)
         amount = validated_data['amount']
+        import pdb
+        pdb.set_trace()
+        from_user_info.subtract_balance(amount)
 
-        from_user.subtract_balance(amount)
+        to_user_info.add_balance(amount)
 
-        to_user.add_balance(amount)
-
-        transfer = transfer.objects.create(
-            from_user=from_user.user,
-            to_user=to_user.user,
+        transfer = Transfer .objects.create(
+            from_user=from_user.user_info,
+            to_user=to_user.user_info,
             amount=amount
         )
 

@@ -5,7 +5,7 @@ import pytest
 from django.db.utils import IntegrityError
 from django.core.exceptions import ValidationError
 from app.forms import SignUpForm
-from app.models.User import user as user_info
+from app.models.user import user as user_info
 from app.forms import LoginForm
 from app.models.transaction import Transaction
 from django.urls import reverse

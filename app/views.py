@@ -6,7 +6,7 @@ from django.core.cache import cache
 from django.shortcuts import render
 from django.views import View
 from django.views.generic import DetailView, ListView
-
+ 
 from .forms import CurrencyConverterForm
 from .models import Currency, CurrencyPrice
 
@@ -19,7 +19,7 @@ import random
 from .models.transaction import Transaction
 from .models.transfer import Transfer
 from .models.user import user
-
+from rest_framework_simplejwt.authentication import JWTAuthentication
 User = get_user_model()
 
 class HomeView(View):
@@ -157,7 +157,7 @@ class SignupView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
         if response.status_code == status.HTTP_201_CREATED:
-            return redirect('/login/')
+            return redirect('/api/login/')
         return response
 
 class OTPRequestView(generics.GenericAPIView):
@@ -167,36 +167,50 @@ class OTPRequestView(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         email = serializer.validated_data['email']
+        # import pdb;pdb.set_trace()
         user = User.objects.filter(email=email).first()
+        user_info = user.user_info
 
-        if user:
+        if user_info:
             otp = str(random.randint(100000, 999999))
-            user.otp = otp
-            user.save()
+            user_info.otp = otp
+
+            user_info.save()
 
         return Response({'message': 'If an account with that email exists, an OTP has been generated and saved.'}, status=status.HTTP_200_OK)
 
 class SendMoneyView(generics.GenericAPIView):
     serializer_class = SendMoneySerializer
+    authentication_classes = [JWTAuthentication]
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
+        # import pdb
+        # pdb.set_trace()
         serializer = self.get_serializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
-        from_user_profile = user.objects.get(user=request.user)
+        from_user_profile = request.user
+        from_user_info = user.objects.filter(user=from_user_profile).first()
         to_user_profile = serializer.validated_data['to_user']
+        to_user = User.objects.filter(username = to_user_profile)
+        to_user_info= user.objects.filter(user=to_user).first()
         amount = serializer.validated_data['amount']
 
-        if from_user_profile.balance < amount:
+        if from_user_info.balance < amount:
             return Response({'error': 'Insufficient balance'}, status=status.HTTP_400_BAD_REQUEST)
+        print("add and subtract error")
 
-        from_user_profile.subtract_balance(amount)
-        to_user_profile.add_balance(amount)
+        from_user_info.subtract_balance(amount)
+        to_user_info.add_balance(amount)
 
-        Transfer.objects.create(from_user=from_user_profile, to_user=to_user_profile, amount=amount)
-        Transaction.objects.create(user=from_user_profile.user, amount=amount)
-        Transaction.objects.create(user=to_user_profile.user, amount=amount)
+        print("tranfer error")
+
+        Transfer.objects.create(from_user=from_user_info, to_user=to_user_info, amount=amount)
+        print("transaction error")
+        Transaction.objects.create(user=from_user_profile, amount=amount)
+        Transaction.objects.create(user=to_user, amount=amount)
 
         return Response({'message': 'Money sent successfully'}, status=status.HTTP_200_OK)
+    
 from typing import Any
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
