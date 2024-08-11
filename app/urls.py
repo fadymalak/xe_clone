@@ -10,6 +10,7 @@ router = DefaultRouter()
 router.register(r"currencies", CurrencyViewSet, basename="currencies")
 
 urlpatterns = [
+    path("", views.HomeView.as_view(), name="home"),
     path('signup/', SignupView.as_view(), name='signup'),
     path('forget-password/', OTPRequestView.as_view(), name='forget-password'),
     path('send-money/', SendMoneyView.as_view(), name='send-money'),

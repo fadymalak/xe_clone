@@ -1,4 +1,6 @@
 # TODO: Import the User from django.conf.settings.AUTH_USER_MODEL if the base user model is changed
+import re
+
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
@@ -11,6 +13,22 @@ class CurrencyConverterSerializer(serializers.Serializer):
     from_currency = serializers.CharField(max_length=3)
     to_currency = serializers.CharField(max_length=3)
     amount = serializers.FloatField(min_value=0)
+
+    def validate_from_currency(self, value):
+        if re.search(r'<.*?>', value):
+            raise serializers.ValidationError("Invalid input: HTML tags are not allowed.")
+        if not value.isalpha():
+            raise serializers.ValidationError("Invalid input: Only alphabetic characters are allowed.")
+
+        return value
+
+    def validate_to_currency(self, value):
+        if re.search(r'<.*?>', value):
+            raise serializers.ValidationError("Invalid input: HTML tags are not allowed.")
+        if not value.isalpha():
+            raise serializers.ValidationError("Invalid input: Only alphabetic characters are allowed.")
+
+        return value
 
 
 class UserSerializer(serializers.ModelSerializer):

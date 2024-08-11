@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework.authtoken",
+    "drf_spectacular",
     "debug_toolbar",
     "app",
     'rest_framework'
@@ -157,7 +158,18 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 APPEND_SLASH = True
 
 INTERNAL_IPS = [
-    # ...
     "127.0.0.1",
-    # ...
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'XE Clone API Documentation',
+    'DESCRIPTION': 'API documentation for the XE Clone project.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}
+
+STATIC_URL = "static/"

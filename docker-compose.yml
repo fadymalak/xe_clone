@@ -6,6 +6,7 @@ services:
     container_name: xe_clone
     environment:
       MYSQL_ROOT_PASSWORD: test1234
+      MYSQL_DATABASE: xe_clone
     ports:
       - "3306:3306"
     volumes:
