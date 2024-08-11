@@ -192,9 +192,9 @@ class SendMoneyView(generics.GenericAPIView):
         from_user_profile.subtract_balance(amount)
         to_user_profile.add_balance(amount)
 
-        transfer.objects.create(from_user=from_user_profile, to_user=to_user_profile, amount=amount)
-        transaction.objects.create(user=from_user_profile.user, amount=amount)
-        transaction.objects.create(user=to_user_profile.user, amount=amount)
+        Transfer.objects.create(from_user=from_user_profile, to_user=to_user_profile, amount=amount)
+        Transaction.objects.create(user=from_user_profile.user, amount=amount)
+        Transaction.objects.create(user=to_user_profile.user, amount=amount)
 
         return Response({'message': 'Money sent successfully'}, status=status.HTTP_200_OK)
 from typing import Any

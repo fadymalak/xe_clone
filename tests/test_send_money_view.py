@@ -2,7 +2,7 @@ import pytest
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from app.models.user import user 
-from app.models.transfer import transfer
+from app.models.transfer import Transfer
 
 User = get_user_model()
 
@@ -28,7 +28,7 @@ def test_send_money_view(authenticated_client, create_user):
     to_user.refresh_from_db()
     assert from_user.balance == 900
     assert to_user.balance == 600
-    assert transfer.objects.filter(from_user=from_user, to_user=to_user, amount=100).exists()
+    assert Transfer.objects.filter(from_user=from_user, to_user=to_user, amount=100).exists()
 
 @pytest.mark.django_db
 def test_send_money_view_insufficient_balance(authenticated_client, create_user):
