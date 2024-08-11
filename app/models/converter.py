@@ -1,5 +1,7 @@
 from django.db import models
 
+from .currency import Currency
+
 
 class converter(models.Model):
     """Model of currency converter.
@@ -13,8 +15,8 @@ class converter(models.Model):
         deleted_at (DateTime): The date when the converter was deleted.
     """
 
-    from_currency = models.ForeignKey("Currency", on_delete=models.CASCADE)
-    to_currency = models.ForeignKey("Currency", on_delete=models.CASCADE)
+    from_currency = models.ForeignKey(Currency, on_delete=models.CASCADE, related_name="from_currency")
+    to_currency = models.ForeignKey(Currency, on_delete=models.CASCADE, related_name="to_currency")
     # TODO: Change to DecimalField or IntegerField
     rate = models.FloatField()
     created_at = models.DateTimeField(auto_now_add=True)

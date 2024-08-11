@@ -1,7 +1,46 @@
-from rest_framework import serializers
+# TODO: Import the User from django.conf.settings.AUTH_USER_MODEL if the base user model is changed
 from django.contrib.auth.models import User
+from rest_framework import serializers
+
+from .models import Currency, CurrencyPrice
 from app.models.user import user
 from app.models.transfer import transfer
+
+
+class CurrencyConverterSerializer(serializers.Serializer):
+    from_currency = serializers.CharField(max_length=3)
+    to_currency = serializers.CharField(max_length=3)
+    amount = serializers.FloatField(min_value=0)
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["username"]
+
+
+class CurrencySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Currency
+        fields = ["id", "name", "symbol"]
+
+
+class CurrencyPriceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CurrencyPrice
+        fields = ["price", "created_at"]
+
+
+class CurrencyDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Currency
+        fields = ["id", "name", "symbol", "country", "image_url", "all_prices"]
+
+    all_prices = serializers.SerializerMethodField()
+
+    def get_all_prices(self, obj):
+        prices = CurrencyPrice.objects.filter(currency=obj).order_by("-created_at")
+        return CurrencyPriceSerializer(prices, many=True).data
 
 
 class OTPRequestSerializer(serializers.Serializer):

@@ -1,0 +1,54 @@
+<!-- This is a starter template I will try to style it -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ currency.name }} Details</title>
+    <style>
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>{{ currency.name }} ({{ currency.symbol }})</h1>
+    <p><strong>Name:</strong> {{ currency.name }}</p>
+    <p><strong>Symbol:</strong> {{ currency.symbol }}</p>
+    <p><strong>Country:</strong> {{ currency.country }}</p>
+    <p><img src='{{currency.image_url}}'</p>
+    <h2>Exchange Rates</h2>
+    {% if all_prices %}
+    <table>
+      <thead>
+        <tr>
+          <th>Price</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for price in all_prices %}
+        <tr>
+          <td>{{ price.price|floatformat:2 }}</td>
+          <td>{{ price.created_at|date:"F j, Y" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p>No prices available.</p>
+    {% endif %}
+
+    <a href="{% url 'currency-list' %}">Back to Currency List</a>
+    <a href="{% url 'convert' %}">Convert Currency</a>
+  </body>
+</html>

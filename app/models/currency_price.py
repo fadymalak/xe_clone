@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class currencyPrice(models.Model):
+class CurrencyPrice(models.Model):
     """Model of the price of a currency at a certain time.
 
     Fields:

@@ -1,0 +1,22 @@
+<!-- This is a starter template I will try to style it -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Currency Converter</title>
+  </head>
+  <body>
+    <h1>Currency Converter</h1>
+    <form method="post">
+      {% csrf_token %} {{ form.as_p }}
+      <button type="submit">Convert</button>
+    </form>
+    {% if context.res %}
+    <h2>Conversion Result</h2>
+    <p>{{ context.res|floatformat:2 }}</p>
+    {% endif %} {% if context.error %}
+    <h2>Error</h2>
+    <p>{{ context.error }}</p>
+    {% endif %}
+  </body>
+</html>
