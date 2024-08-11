@@ -16,8 +16,8 @@ from .serializers import SignupSerializer, OTPRequestSerializer, SendMoneySerial
 from django.shortcuts import redirect
 from rest_framework.response import Response
 import random
-from .models.transaction import transaction
-from .models.transfer import transfer
+from .models.transaction import Transaction
+from .models.transfer import Transfer
 from .models.user import user
 
 User = get_user_model()
@@ -201,7 +201,7 @@ from typing import Any
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 from django.views.generic.edit import CreateView
-from app.models.User import User
+from app.models.user import User
 from django.urls import reverse_lazy
 from app.forms import SignUpForm, LoginForm
 from app.models.transaction import Transaction
@@ -228,7 +228,7 @@ from typing import Any
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 from django.views.generic.edit import CreateView
-from app.models.User import User
+from app.models.user import User
 from django.urls import reverse_lazy
 from app.forms import SignUpForm, LoginForm
 from app.models.transaction import Transaction

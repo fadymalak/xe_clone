@@ -101,7 +101,7 @@ from rest_framework import serializers
 
 from .models import Currency, CurrencyPrice
 from app.models.user import user
-from app.models.transfer import transfer
+from app.models.transfer import Transfer
 
 
 class CurrencyConverterSerializer(serializers.Serializer):
@@ -184,7 +184,7 @@ class SendMoneySerializer(serializers.ModelSerializer):
     to_user_username = serializers.CharField()
 
     class Meta:
-        model = transfer
+        model = Transfer
         fields = ['to_user_username', 'amount']
 
     def validate(self, data):

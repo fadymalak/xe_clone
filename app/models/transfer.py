@@ -1,7 +1,7 @@
 from django.db import models
 from app.models.user import user
 
-class transfer(models.Model):
+class Transfer(models.Model):
     from_user = models.ForeignKey(user, related_name='transfers_made', on_delete=models.CASCADE)
     to_user = models.ForeignKey(user, related_name='transfers_received', on_delete=models.CASCADE)
     amount = models.FloatField()

@@ -1,5 +1,5 @@
 from django import forms
-from app.models.User import User
+from app.models.user import User
 from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate
 import re
