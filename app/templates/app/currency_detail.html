@@ -1,0 +1,46 @@
+{% extends "app/base_template.html" %} {% block content %}
+<ul class="breadcrumb">
+  <li class="breadcrumb-item">
+    <a href="{% url 'currency-list' %}" class="breadcrumb-link"
+      >Currency list</a
+    >
+  </li>
+  <li class="breadcrumb-item">
+    <a href="#" class="breadcrumb-link">{{ currency.name }}</a>
+  </li>
+</ul>
+<div class="container">
+  <section class="currency-details">
+    <img
+      src="{{currency.image_url}}"
+      alt="{{currency.name}}"
+      class="details-image"
+    />
+    <h2 class="details-header">{{ currency.name }} ({{ currency.symbol }})</h2>
+    <p><strong>Name:</strong> {{ currency.name }}</p>
+    <p><strong>Symbol:</strong> {{ currency.symbol }}</p>
+    <p><strong>Country:</strong> {{ currency.country }}</p>
+  </section>
+  <h2 class="table-header">Exchange Rates</h2>
+  {% if all_prices %}
+  <table class="table-prices">
+    <thead>
+      <tr>
+        <th>Price</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for price in all_prices %}
+      <tr>
+        <td>{{ price.price|floatformat:2 }}</td>
+        <td>{{ price.created_at|date:"F j, Y" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>No prices available.</p>
+  {% endif %}
+</div>
+{% endblock %}

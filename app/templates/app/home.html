@@ -1,0 +1,19 @@
+{% extends 'app/base_template.html' %} {% block content %}
+<div class="hero-container">
+  <span class="hero-intro">XE Clone Project using Django</span>
+  <h2 class="hero-heading">
+    This is a clone of the XE currency exchange website.
+  </h2>
+  <p class="hero-text">
+    You can view a list of currencies, convert between currencies, and send
+    money. To get started, click on the "Currencies" button to view a list of
+    currencies. Also you can register and login to access more features.
+  </p>
+  <a href="{% url 'currency-list' %}" class="btn btn--hero">View Currencies</a>
+  <img
+    src="../static/app/img/towfiqu-barbhuiya-jpqyfK7GB4w-unsplash.jpg"
+    alt="XE"
+    class="hero-image"
+  />
+</div>
+{% endblock %}

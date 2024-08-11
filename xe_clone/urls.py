@@ -11,13 +11,36 @@ Class-based views
     2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
 Including another URLconf
     1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+    2. Add a URL to urlpatterns:  path('blog/', include('bl    path('admin/', admin.site.urls),
+og.urls'))
 """
+from debug_toolbar.toolbar import debug_toolbar_urls
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import include, path, include
+from app.views import LoginViewAPI, ResetPasswordAPI, TransactionHistoryViewAPI
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+from app.views import SignUpView, LoginView, TransactionHistoryView
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('app.urls')),
-]
-
+    path('signup/', SignUpView.as_view(), name='signup'),
+    path('login/', LoginView.as_view(), name='login'),
+    path('history/', TransactionHistoryView.as_view(), name='history'),
+    path('api/login/', LoginViewAPI.as_view(), name='api-login'),
+    path('api/reset-password/', ResetPasswordAPI.as_view(), name='api-reset-password'),
+    path('api/transactions/history/', TransactionHistoryViewAPI.as_view(), name='api-transaction-history'),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    # path('api/', include('app.urls')),
+    path("app/", include("app.urls")),
+    path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),
+    path(
+        "api/docs/",
+        SpectacularSwaggerView.as_view(url_name="api-schema"),
+        name="api-docs",
+    ),
+] + debug_toolbar_urls()
