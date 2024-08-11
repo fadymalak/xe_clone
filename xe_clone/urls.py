@@ -35,7 +35,7 @@ urlpatterns = [
     path('api/transactions/history/', TransactionHistoryViewAPI.as_view(), name='api-transaction-history'),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/', include('app.urls')),
+    # path('api/', include('app.urls')),
     path("app/", include("app.urls")),
     path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),
     path(
@@ -44,4 +44,3 @@ urlpatterns = [
         name="api-docs",
     ),
 ] + debug_toolbar_urls()
-
